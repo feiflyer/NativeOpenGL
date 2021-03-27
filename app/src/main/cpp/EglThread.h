@@ -11,26 +11,25 @@
 #include "EglHelper.h"
 #include "pthread.h"
 
-typedef void (*onCreate)();
-
-typedef void (*onChange)(int width, int height);
-
-typedef void (*onDestroy)();
-
-typedef void (*onDrawFrame)();
+typedef void (*onThreadCallback)(void *);
 
 class EglThread {
 
 public:
 
-    // 指针函数
-    onCreate onCreateCall;
-    onChange onChangeCall;
-    onDestroy onDestroyCall;
+    EglThread();
+    ~EglThread();
 
-    onDrawFrame onDrawFrameCall;
+    // 指针函数
+    onThreadCallback onCreateCall = nullptr;
+    onThreadCallback onChangeCall = nullptr;
+    onThreadCallback onDestroyCall = nullptr;
+
+    onThreadCallback onDrawFrameCall = nullptr;
 
     EglHelper *eglHelper;
+
+    void *contextData;
 
     NativeWindowType win;
 
@@ -40,11 +39,9 @@ public:
 
     void onSurfaceDestroy();
 
-    int width,height;
-
     pthread_t nativeThread = -1;
 
-    bool isCreate,isChange,isDestroy,isStart,isExit = false;
+    bool isCreate = false,isChange = false,isDestroy = false,isStart = false,isExit = false;
 
 private:
 

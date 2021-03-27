@@ -9,7 +9,8 @@ add_library(
         native-lib.cpp
         BaseOpengl.cpp
         EglThread.cpp
-        EglHelper)
+        EglHelper.cpp
+        TriangleOpenGL.cpp)
 
 
 find_library(

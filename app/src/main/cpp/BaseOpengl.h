@@ -20,6 +20,14 @@ public:
 
     void onSurfaceDestroy();
 
+    virtual void onCreateCallback() = 0;
+    virtual void onChangeCallback(int width, int height) = 0;
+    virtual void onDestroyCallback() = 0;
+
+    virtual void onDrawFrameCallback() = 0;
+
+    int width,height;
+
 private:
     EglThread *eglThread = nullptr;
 

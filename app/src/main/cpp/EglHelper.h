@@ -7,6 +7,7 @@
 
 #include <EGL/egl.h>
 #include "android/native_window.h"
+#include <GLES3/gl3.h>
 
 class EglHelper {
 
@@ -15,6 +16,7 @@ public:
     EGLDisplay eglDisplay;
     EGLConfig eglConfig;
     EGLContext eglContext;
+    EGLSurface eglSurface;
 
     EglHelper();
 

@@ -14,34 +14,48 @@ void *eglThreadImpl(void *context) {
         while (!eglThread->isExit) {
             if (nullptr != eglThread->onCreateCall && eglThread->isCreate) {
                 eglThread->isCreate = false;
-                eglThread->onCreateCall();
+                eglThread->onCreateCall(eglThread->contextData);
             }
 
             if (nullptr != eglThread->onChangeCall && eglThread->isChange) {
                 eglThread->isChange = false;
                 eglThread->isStart = true;
-                eglThread->onChangeCall(eglThread->width, eglThread->height);
-            }
-
-            if (eglThread->isStart && nullptr != eglThread->onDrawFrameCall) {
-                eglThread->onDrawFrameCall();
-                // 每秒60帧
-                usleep(1000000/60);
+                eglThread->onChangeCall(eglThread->contextData);
             }
 
             if (nullptr != eglThread->onDestroyCall && eglThread->isDestroy) {
-                eglThread->onDestroyCall();
-
+                eglThread->onDestroyCall(eglThread->contextData);
                 if (nullptr != eglThread->eglHelper) {
                     eglThread->eglHelper->destroy();
                     delete eglThread->eglHelper;
                     eglThread->eglHelper = nullptr;
                 }
                 eglThread->isExit = true;
+                break;
             }
+
+            if (eglThread->isStart && nullptr != eglThread->onDrawFrameCall) {
+                eglThread->onDrawFrameCall(eglThread->contextData);
+                eglThread->eglHelper->swapBuffers();
+                // 每秒60帧
+                usleep(1000000 / 60);
+            }
+
         }
     }
+
+    return 0;
 }
+
+
+EglThread::EglThread() {
+
+}
+
+EglThread::~EglThread() {
+
+}
+
 
 void EglThread::onSurfaceCreate(NativeWindowType win) {
     isCreate = true;
@@ -50,13 +64,10 @@ void EglThread::onSurfaceCreate(NativeWindowType win) {
     if (nativeThread == -1) {
         pthread_create(&nativeThread, nullptr, eglThreadImpl, this);
     }
-
 }
 
 void EglThread::onSurfaceChange(int width, int height) {
     isChange = true;
-    this->width = width;
-    this->height = height;
 }
 
 void EglThread::onSurfaceDestroy() {

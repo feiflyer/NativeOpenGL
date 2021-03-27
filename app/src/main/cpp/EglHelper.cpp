@@ -46,7 +46,7 @@ void EglHelper::initEgl(EGLNativeWindowType windowType) {
         LOGD("eglCreateContext 失败");
     }
 
-    EGLSurface eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, windowType, NULL);
+    eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, windowType, NULL);
     if (eglSurface == EGL_NO_SURFACE) {
         LOGD("eglCreateWindowSurface 失败");
     }
@@ -68,7 +68,18 @@ EglHelper::~EglHelper() {
 }
 
 void EglHelper::swapBuffers() {
+    if(eglDisplay != EGL_NO_DISPLAY && eglSurface != EGL_NO_SURFACE)
+    {
+        glClearColor(1,0,0.5,0);
+        glClear(GL_COLOR_BUFFER_BIT);
 
+        if(eglSwapBuffers(eglDisplay, eglSurface))
+        {
+            LOGD("eglSwapBuffers 成功");
+        } else{
+            LOGD("eglSwapBuffers 失败");
+        }
+    }
 }
 
 void EglHelper::destroy() {
