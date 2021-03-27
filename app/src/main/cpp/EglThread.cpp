@@ -38,7 +38,9 @@ void *eglThreadImpl(void *context) {
                 eglThread->onDrawFrameCall(eglThread->contextData);
                 eglThread->eglHelper->swapBuffers();
                 // 每秒60帧
-                usleep(1000000 / 60);
+//                usleep(1000000 / 60);
+
+                usleep(1000000 / 0.5);
             }
 
         }

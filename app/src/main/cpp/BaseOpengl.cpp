@@ -30,6 +30,10 @@ BaseOpengl::BaseOpengl() {
 
 }
 
+BaseOpengl::~BaseOpengl() {
+
+}
+
 void BaseOpengl::onSurfaceCreate(NativeWindowType win) {
     if (nullptr == eglThread) {
         eglThread = new EglThread;

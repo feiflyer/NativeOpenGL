@@ -70,9 +70,6 @@ EglHelper::~EglHelper() {
 void EglHelper::swapBuffers() {
     if(eglDisplay != EGL_NO_DISPLAY && eglSurface != EGL_NO_SURFACE)
     {
-        glClearColor(1,0,0.5,0);
-        glClear(GL_COLOR_BUFFER_BIT);
-
         if(eglSwapBuffers(eglDisplay, eglSurface))
         {
             LOGD("eglSwapBuffers 成功");

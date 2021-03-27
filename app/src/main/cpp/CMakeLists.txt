@@ -10,7 +10,8 @@ add_library(
         BaseOpengl.cpp
         EglThread.cpp
         EglHelper.cpp
-        TriangleOpenGL.cpp)
+        TriangleOpenGL.cpp
+        TextureOpenGL.cpp)
 
 
 find_library(
@@ -23,4 +24,5 @@ target_link_libraries(
         EGL
         GLESv3
         android
+        jnigraphics
         ${log-lib})
