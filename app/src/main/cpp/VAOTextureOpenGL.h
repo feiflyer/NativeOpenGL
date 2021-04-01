@@ -11,6 +11,16 @@
 class VAOTextureOpenGL : public BaseOpengl {
 
 public:
+
+    // 顶点vao
+    GLuint vao;
+
+    // 顶点坐标vbo
+    GLuint vboId;
+
+    // 纹理坐标vbo
+    GLuint t_vboId;
+
     GLuint textureId;
     int vPosition;
     // 纹理坐标变量

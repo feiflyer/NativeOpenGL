@@ -8,6 +8,7 @@
 #include "TextureOpenGL.h"
 #import <android/bitmap.h>
 #include "VBOTextureOpenGL.h"
+#include "VAOTextureOpenGL.h"
 
 BaseOpengl *baseOpengl = nullptr;
 
@@ -16,7 +17,7 @@ JNIEXPORT void JNICALL
 Java_com_xgbk_nativeopengl_helper_EglHelper_surfaceCreated(JNIEnv *env, jobject thiz,
                                                            jobject surface) {
 
-    baseOpengl = new VBOTextureOpenGL;
+    baseOpengl = new VAOTextureOpenGL;
     NativeWindowType win = ANativeWindow_fromSurface(env, surface);
     baseOpengl->onSurfaceCreate(win);
 }

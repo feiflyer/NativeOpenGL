@@ -6,6 +6,8 @@
 #include "VAOTextureOpenGL.h"
 
 
+// VAO的说明https://www.zhihu.com/question/30095978?sort=created
+
 VAOTextureOpenGL::VAOTextureOpenGL() {
     vertex = "#version 300 es\n"
              "layout(location = 0) in vec4 v_Position;\n"
@@ -67,10 +69,41 @@ void VAOTextureOpenGL::onCreateCallback() {
     LOGD("vPosition:%d", vPosition)
     LOGD("fPosition:%d", fPosition)
     LOGD("sampler:%d", sampler)
+
+    // 创建顶点缓冲
+    GLuint *ids = new GLuint[2];
+    glGenBuffers(2, ids);
+    vboId = ids[0];
+    t_vboId = ids[1];
+
+    glBindBuffer(GL_ARRAY_BUFFER, vboId);
+    // size 以字节数表示
+    glBufferData(GL_ARRAY_BUFFER, 32, vertexPosition, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, t_vboId);
+    glBufferData(GL_ARRAY_BUFFER, 32, texturePosition, GL_STATIC_DRAW);
+
+    // 生成顶点数组缓冲
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    // 这些本来应该在VBO的draw的时候调用的，但是使用VAO之后可以提前准备好，draw的时候直接使用
+    glBindBuffer(GL_ARRAY_BUFFER, vboId);
+    glEnableVertexAttribArray(vPosition);
+    glVertexAttribPointer(vPosition, 2, GL_FLOAT, false, 8, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, t_vboId);
+    glEnableVertexAttribArray(fPosition);
+    glVertexAttribPointer(fPosition, 2, GL_FLOAT, false, 0, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0);
+
 }
 
 void VAOTextureOpenGL::onChangeCallback(int width, int height) {
-    glViewport(0,0,width,height);
+    glViewport(0, 0, width, height);
 }
 
 void VAOTextureOpenGL::onDrawFrameCallback() {
@@ -83,6 +116,10 @@ void VAOTextureOpenGL::onDrawFrameCallback() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(progrm);
+
+        // 使用VAO
+        glBindVertexArray(vao);
+
         glActiveTexture(GL_TEXTURE0);
         glUniform1i(sampler, 0);
         glBindTexture(GL_TEXTURE_2D, textureId);
@@ -90,15 +127,28 @@ void VAOTextureOpenGL::onDrawFrameCallback() {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1200, 1200, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                      imageData);
 
-        glEnableVertexAttribArray(vPosition);
-        glVertexAttribPointer(vPosition, 2, GL_FLOAT, false, 8, vertexPosition);
+//        glBindBuffer(GL_ARRAY_BUFFER, vboId);
+//        glEnableVertexAttribArray(vPosition);
+////        glVertexAttribPointer(vPosition, 2, GL_FLOAT, false, 8, vertexPosition);
+//
+//// 启动VBO pointer传0即可,使用之前还需要重新glBindBuffer一下
+//        glVertexAttribPointer(vPosition, 2, GL_FLOAT, false, 0, 0);
+//
+//        glBindBuffer(GL_ARRAY_BUFFER, t_vboId);
+//        glEnableVertexAttribArray(fPosition);
+//
+////        glVertexAttribPointer(fPosition, 2, GL_FLOAT, false, 8, texturePosition);
+//
+//        glVertexAttribPointer(fPosition, 2, GL_FLOAT, false, 0, 0);
 
-        glEnableVertexAttribArray(fPosition);
-        glVertexAttribPointer(fPosition, 2, GL_FLOAT, false, 8, texturePosition);
+
 
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
         glBindTexture(GL_TEXTURE_2D, 0);
+
+        // 解绑vao
+        glBindVertexArray(0);
     }
 }
 
