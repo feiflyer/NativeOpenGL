@@ -11,7 +11,9 @@ add_library(
         EglThread.cpp
         EglHelper.cpp
         TriangleOpenGL.cpp
-        TextureOpenGL.cpp)
+        TextureOpenGL.cpp
+        VBOTextureOpenGL.cpp
+        VAOTextureOpenGL.cpp)
 
 
 find_library(
