@@ -107,12 +107,14 @@ void VBOTextureOpenGL::onDrawFrameCallback() {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1200, 1200, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                      imageData);
 
+        glBindBuffer(GL_ARRAY_BUFFER, vboId);
         glEnableVertexAttribArray(vPosition);
 //        glVertexAttribPointer(vPosition, 2, GL_FLOAT, false, 8, vertexPosition);
 
-// 启动VBO pointer传0即可
+// 启动VBO pointer传0即可,使用之前还需要重新glBindBuffer一下
         glVertexAttribPointer(vPosition, 2, GL_FLOAT, false, 0, 0);
 
+        glBindBuffer(GL_ARRAY_BUFFER, t_vboId);
         glEnableVertexAttribArray(fPosition);
 
 //        glVertexAttribPointer(fPosition, 2, GL_FLOAT, false, 8, texturePosition);
